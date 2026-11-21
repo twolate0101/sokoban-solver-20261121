@@ -1,0 +1,5 @@
+import fs from'fs'
+let{MAKEFUN_INPUT_DIR:I='/input',MAKEFUN_OUTPUT_DIR:O='/output'}=process.env
+let W,w,D
+let solve=t=>{w=t.search('\n');t=t.replace(/\n/g,'');W=[];D=[-w,w,-1,1];let Rm=[];for(let i=t.length;i--;){if(t[i]=='#')W[i]=1;else{let k=(i/w>=8)*2+(i%w>6),e=()=>Rm[k]??={b:[],g:[]};if(/[.*+]/.test(t[i]))e().g.unshift(i);if(/[$*]/.test(t[i]))e().b.unshift(i);}}let rooms=Rm.filter(x=>x),m='',pl=t.search('@');for(let r of rooms){let V=[...W];rooms.map(o=>o!=r&&o.b.map(b=>V[b]=1));let Q=[[r.b,pl,'']],qh=0,qt=1,seen={},f=0;for(;qh<qt;){let[B,pp,mm]=Q[qh++];if(B+''==r.g+''){m+=mm,pl=pp,f=1;break}let ky=B+','+pp;if(seen[ky])continue;seen[ky]=1;for(let k=4;k--;){let n=pp+D[k];if(V[n])continue;let bi=B.indexOf(n),nb=B;if(bi>=0){let t=n+D[k];if(V[t]||B.includes(t)||!r.g.includes(t)&&(V[t-1]||V[t+1])&&(V[t-w]||V[t+w]))continue;nb=[...B];nb[bi]=t;nb.sort((a,b)=>a-b);}Q[bi<0?--qh:qt++]=[nb,n,mm+'udlr'[k]]}}if(!f)return'';r.b=r.g}return m}
+fs.readdirSync(I).map(d=>{let p=O+'/'+d;fs.mkdirSync(p,{recursive:true});fs.writeFileSync(p+'/solution.txt',solve(fs.readFileSync(I+'/'+d+'/level.txt')+''))})
